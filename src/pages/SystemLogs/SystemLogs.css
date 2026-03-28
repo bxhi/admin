@@ -1,0 +1,207 @@
+/* SystemLogs.css - Dark Aesthetic */
+
+.logs-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+/* Control Panel */
+.logs-control-panel {
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.control-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.search-wrapper {
+    position: relative;
+    min-width: 300px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.search-input {
+    padding-left: 45px !important;
+}
+
+.filters-wrapper {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.dark-select.auto-width {
+    width: auto;
+    min-width: 160px;
+}
+
+.dark-outline-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    color: #fff;
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.dark-outline-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Legend Row */
+.legend-row {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #94a3b8;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    box-shadow: 0 0 8px currentColor;
+}
+
+.dot-success { color: #10b981; background: #10b981; }
+.dot-warning { color: #f59e0b; background: #f59e0b; }
+.dot-error   { color: #ef4444; background: #ef4444; }
+
+/* Table Section */
+.logs-table-card {
+    padding: 30px;
+}
+
+.card-header {
+    margin-bottom: 25px;
+}
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.logs-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.logs-table th {
+    text-align: left;
+    padding: 15px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #94a3b8;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    white-space: nowrap;
+}
+
+.logs-table td {
+    padding: 16px 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    vertical-align: top;
+    font-size: 14px;
+}
+
+.log-row:hover td {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+/* Base Typographies */
+.text-white { color: #f8fafc; }
+.text-light { color: #cbd5e1; }
+.font-semibold { font-weight: 600; }
+
+/* Times */
+.time-block {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-family: 'Inter', monospace;
+    font-size: 13px;
+}
+
+.date-str { color: #94a3b8; }
+.time-str { color: #64748b; font-size: 12px; }
+
+/* Level Badges */
+.level-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+}
+
+.log-icon {
+    font-size: 16px;
+}
+
+.text-info { color: #3b82f6; }
+.text-success { color: #10b981; }
+.text-warning { color: #f59e0b; }
+.text-error { color: #ef4444; }
+
+/* Category Pills */
+.category-pill {
+    display: inline-block;
+    padding: 6px 14px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    color: #e2e8f0;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: lowercase;
+    white-space: nowrap;
+}
+
+/* Responsiveness */
+@media (max-width: 1200px) {
+    .control-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .filters-wrapper {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    .search-wrapper {
+        width: 100%;
+    }
+}

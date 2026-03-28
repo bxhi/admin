@@ -1,0 +1,238 @@
+/* AdminLogin.css - Perfect 'Outfit' Font Integration */
+
+
+
+/* Ensure font is applied to all interactive elements */
+input,
+button,
+select,
+textarea {
+    font-family: 'Outfit', sans-serif !important;
+}
+
+/* --- New Dark Theme Layout --- */
+.admin-login-wrapper {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #05050a; /* Deepest black matching dashboard */
+    position: relative;
+    overflow: hidden;
+}
+
+.dark-theme-glows {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.5;
+}
+
+.glow-1 {
+    width: 600px;
+    height: 600px;
+    top: -200px;
+    left: -150px;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.25) 0%, transparent 70%);
+}
+
+.glow-2 {
+    width: 800px;
+    height: 800px;
+    bottom: -300px;
+    right: -200px;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%);
+}
+
+/* --- Compact Login Card --- */
+.login-card-form {
+    background: rgba(15, 15, 23, 0.6);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(139, 92, 246, 0.15);
+    padding: 50px 40px;
+    border-radius: 24px;
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    z-index: 10;
+    position: relative;
+}
+
+.lock-icon-badge {
+    background: linear-gradient(135deg, #6d28d9, #8b5cf6);
+    width: 72px;
+    height: 72px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+    transform: rotate(-6deg);
+    box-shadow: 0 15px 35px rgba(139, 92, 246, 0.4);
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.login-card-form:hover .lock-icon-badge {
+    transform: rotate(0deg) scale(1.05);
+}
+
+.two-factor-card h1,
+.login-card-form h1 {
+    font-size: 32px;
+    color: #fff;
+    font-weight: 800;
+    margin: 0 0 10px 0;
+    letter-spacing: -1px;
+    text-align: center;
+    background: linear-gradient(to right, #ffffff, #c4b5fd);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.desc {
+    font-size: 15px;
+    color: #94a3b8;
+    margin-bottom: 40px;
+    text-align: center;
+    line-height: 1.6;
+    max-width: 320px;
+}
+
+.field {
+    width: 100%;
+    margin-bottom: 24px;
+    text-align: left;
+}
+
+.admin-login-wrapper.rtl .field {
+    text-align: right;
+}
+
+.field label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 12px;
+    font-weight: 800;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.input-field-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.input-field-wrapper .input-icon {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #8b5cf6;
+    font-size: 20px;
+}
+
+.admin-login-wrapper.rtl .input-field-wrapper .input-icon {
+    left: auto;
+    right: 20px;
+}
+
+.input-field-wrapper input {
+    width: 100%;
+    padding: 18px 20px 18px 55px;
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    border-radius: 14px;
+    font-size: 16px;
+    background: rgba(15, 15, 23, 0.8);
+    color: #fff;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.admin-login-wrapper.rtl .input-field-wrapper input {
+    padding: 18px 55px 18px 20px;
+}
+
+.input-field-wrapper input:focus {
+    outline: none;
+    border-color: #8b5cf6;
+    background: rgba(139, 92, 246, 0.05);
+    box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15);
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 18px;
+    background: linear-gradient(135deg, #6d28d9, #8b5cf6);
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    font-weight: 800;
+    font-size: 17px;
+    cursor: pointer;
+    margin-top: 10px;
+    margin-bottom: 25px;
+    box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.submit-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(139, 92, 246, 0.6);
+}
+
+.help-link {
+    font-size: 15px;
+    color: #c4b5fd;
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.2s;
+}
+
+.help-link:hover {
+    color: #fff;
+}
+
+/* --- RTL Controls --- */
+.rtl-toggle-container {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    z-index: 100;
+}
+
+.rtl-toggle-btn {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 10px 24px;
+    border-radius: 40px;
+    font-size: 12px;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.rtl-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.admin-login-container.rtl .rtl-toggle-container {
+    right: auto;
+    left: 30px;
+}

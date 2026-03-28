@@ -1,0 +1,259 @@
+/* Reports.css - Dark Theme Integrations */
+
+.reports-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.report-generator-card {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.card-title {
+    font-size: 20px;
+    color: #fff;
+    margin: 0;
+}
+
+.generator-controls {
+    display: grid;
+    grid-template-columns: minmax(200px, 1.5fr) 1fr 1fr 1fr;
+    gap: 20px;
+    align-items: flex-end;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.control-group label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #94a3b8;
+}
+
+.action-group {
+    justify-content: flex-end;
+}
+
+/* Custom Input Styling matching Dark Glass Theme */
+.input-wrapper, .select-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.dark-input {
+    width: 100%;
+    padding: 14px 16px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: #fff;
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    outline: none;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.dark-input:focus {
+    border-color: #3b82f6;
+    background: rgba(15, 15, 23, 0.8);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2), inset 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+/* Select specific */
+.dark-select {
+    appearance: none;
+    cursor: pointer;
+    padding-right: 40px;
+}
+
+.dark-select option {
+    background: #0f0f17;
+    color: #fff;
+}
+
+.select-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    pointer-events: none;
+}
+
+/* Date Input specific */
+.date-input {
+    padding-left: 45px;
+}
+
+.date-input::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    opacity: 0.5;
+    cursor: pointer;
+}
+
+.date-input::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+}
+
+.input-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    z-index: 10;
+}
+
+/* Run Button */
+.run-btn {
+    width: 100%;
+    height: 48px; /* Match input heights roughly */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+}
+
+.run-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.5);
+}
+
+.run-btn:active {
+    transform: translateY(0);
+}
+
+.run-btn.generating {
+    background: rgba(37, 99, 235, 0.5);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Spinner Animation for button */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Recent Reports Grid Stub */
+.reports-recent-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.recent-report-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    transition: transform 0.2s;
+}
+
+.recent-report-card:hover {
+    transform: translateY(-3px);
+}
+
+.r-icon-box {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+}
+
+.blue-box {
+    background: rgba(59, 130, 246, 0.15);
+    color: #60a5fa;
+}
+
+.purple-box {
+    background: rgba(139, 92, 246, 0.15);
+    color: #a78bfa;
+}
+
+.green-box {
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+}
+
+.r-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.r-info h4 {
+    margin: 0;
+    color: #fff;
+    font-size: 15px;
+}
+
+.r-info span {
+    font-size: 12px;
+}
+
+.download-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #cbd5e1;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.download-btn:hover {
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+    border-color: rgba(255,255,255,0.3);
+}
+
+/* Responsive constraints */
+@media (max-width: 1024px) {
+    .generator-controls {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .generator-controls {
+        grid-template-columns: 1fr;
+    }
+}
