@@ -3,7 +3,7 @@ import './Reports.css';
 import DashboardLayout from '../../components/Layout/DashboardLayout';
 import { FiBarChart2, FiCalendar, FiChevronDown, FiDownload } from 'react-icons/fi';
 
-const Reports = ({ onNavigate }) => {
+const Reports = ({ onNavigate, onLogout }) => {
     // State to simulate date picking/dropdowns
     const [reportType, setReportType] = useState('Revenue');
     const [dateFrom, setDateFrom] = useState('2024-01-01');
@@ -17,7 +17,7 @@ const Reports = ({ onNavigate }) => {
     };
 
     return (
-        <DashboardLayout onNavigate={onNavigate} activePage="reports">
+        <DashboardLayout onNavigate={onNavigate} onLogout={onLogout} activePage="reports">
             <div className="dashboard-header">
                 <h1>Reports</h1>
                 <p>Generate and export platform reports</p>

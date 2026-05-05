@@ -3,7 +3,7 @@ import './EscrowPayments.css';
 import DashboardLayout from '../../components/Layout/DashboardLayout';
 import { FiDollarSign, FiRefreshCw, FiAlertCircle, FiEye, FiX, FiClock } from 'react-icons/fi';
 
-const EscrowPayments = ({ onNavigate }) => {
+const EscrowPayments = ({ onNavigate, onLogout }) => {
     const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
     const [selectedEscrow, setSelectedEscrow] = useState(null);
 
@@ -83,7 +83,7 @@ const EscrowPayments = ({ onNavigate }) => {
     ];
 
     return (
-        <DashboardLayout onNavigate={onNavigate} activePage="escrow">
+        <DashboardLayout onNavigate={onNavigate} onLogout={onLogout} activePage="escrow">
             <div className="dashboard-header">
                 <h1>Escrow & Payments</h1>
                 <p>Manage escrow transactions and fund releases</p>

@@ -3,7 +3,7 @@ import './Verification.css';
 import DashboardLayout from '../../components/Layout/DashboardLayout';
 import { FiEye, FiCheck, FiX, FiImage, FiZoomIn, FiMessageSquare } from 'react-icons/fi';
 
-const Verification = ({ onNavigate }) => {
+const Verification = ({ onNavigate, onLogout }) => {
     const [activeTab, setActiveTab] = useState('clients');
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
     const [selectedRecord, setSelectedRecord] = useState(null);
@@ -66,7 +66,7 @@ const Verification = ({ onNavigate }) => {
     );
 
     return (
-        <DashboardLayout onNavigate={onNavigate} activePage="verification">
+        <DashboardLayout onNavigate={onNavigate} onLogout={onLogout} activePage="verification">
             <div className="dashboard-header">
                 <h1>Verification Management</h1>
                 <p>Review and approve user verification submissions</p>

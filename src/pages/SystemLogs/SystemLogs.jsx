@@ -116,13 +116,13 @@ const getLevelIcon = (level) => {
     }
 };
 
-const SystemLogs = ({ onNavigate }) => {
+const SystemLogs = ({ onNavigate, onLogout }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [levelFilter, setLevelFilter] = useState('All Levels');
     const [categoryFilter, setCategoryFilter] = useState('All Categories');
 
     return (
-        <DashboardLayout onNavigate={onNavigate} activePage="logs">
+        <DashboardLayout onNavigate={onNavigate} onLogout={onLogout} activePage="logs">
             <div className="dashboard-header">
                 <h1>System Logs</h1>
                 <p>Monitor and review system activity logs</p>

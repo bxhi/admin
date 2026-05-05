@@ -30,7 +30,7 @@
     align-items: center;
 }
 
-.status-pill {
+.inspection-card .status-pill {
     position: absolute;
     top: 15px;
     right: 15px;

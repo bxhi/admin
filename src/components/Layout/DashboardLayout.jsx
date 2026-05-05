@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
 import { 
     FiHome, FiUsers, FiCheckCircle, FiDollarSign, 
-    FiClipboard, FiBarChart2, FiSettings, FiServer, FiLogOut, FiMenu 
+    FiClipboard, FiBarChart2, FiSettings, FiServer, FiLogOut, FiMenu, FiPackage, FiHelpCircle
 } from 'react-icons/fi';
 import { FaBell } from 'react-icons/fa';
+import authService from '../../api/authService';
 import './DashboardLayout.css';
 
-const DashboardLayout = ({ children, activePage, onNavigate }) => {
+const DashboardLayout = ({ children, activePage, onNavigate, onLogout }) => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+    const handleLogout = async () => {
+        await authService.logout();
+        if (onLogout) onLogout();
+    };
 
     const navItems = [
         { id: 'dashboard', label: 'Dashboard', icon: <FiHome /> },
@@ -17,6 +23,8 @@ const DashboardLayout = ({ children, activePage, onNavigate }) => {
         { id: 'inspection', label: 'Inspection Review', icon: <FiClipboard /> },
         { id: 'reports', label: 'Reports', icon: <FiBarChart2 /> },
         { id: 'settings', label: 'Settings', icon: <FiSettings /> },
+        { id: 'packs', label: 'Manage Packs', icon: <FiPackage /> },
+        { id: 'support', label: 'Support', icon: <FiHelpCircle /> },
         { id: 'logs', label: 'System Logs', icon: <FiServer /> },
     ];
 
@@ -45,7 +53,7 @@ const DashboardLayout = ({ children, activePage, onNavigate }) => {
                 </div>
 
                 <div className="sidebar-footer">
-                    <button className="nav-item logout-btn">
+                    <button className="nav-item logout-btn" onClick={handleLogout}>
                         <span className="nav-icon"><FiLogOut /></span>
                         <span className="nav-label">Logout</span>
                     </button>

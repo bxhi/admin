@@ -4,7 +4,7 @@ import DashboardLayout from '../../components/Layout/DashboardLayout';
 import { FiUsers, FiActivity, FiBox, FiDollarSign, FiTrendingUp } from 'react-icons/fi';
 import { PieChart, Pie, Cell, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 
-const Dashboard = ({ onNavigate }) => {
+const Dashboard = ({ onNavigate, onLogout }) => {
     const statCards = [
         { title: 'Total Users', value: '12,483', trend: '+12.5%', isPositive: true, icon: <FiUsers />, colorClass: 'blue' },
         { title: 'Active Importators', value: '3,247', trend: '+8.2%', isPositive: true, icon: <FiActivity />, colorClass: 'green' },
@@ -39,7 +39,7 @@ const Dashboard = ({ onNavigate }) => {
     ];
 
     return (
-        <DashboardLayout onNavigate={onNavigate} activePage="dashboard">
+        <DashboardLayout onNavigate={onNavigate} onLogout={onLogout} activePage="dashboard">
             <div className="dashboard-header">
                 <h1>Dashboard</h1>
                 <p>Overview of your platform performance and metrics</p>
@@ -166,7 +166,7 @@ const Dashboard = ({ onNavigate }) => {
                                     <td className="time-cell">{activity.time}</td>
                                     <td className="center-cell">
                                         <span className={`status-pill ${activity.status}`}>
-                                            {activity.status === 'danger' ? 'danger' : activity.status === 'info' ? 'info' : 'success'}
+                                            {activity.status === 'danger' ? 'Rejected' : activity.status === 'info' ? 'Pending' : 'Completed'}
                                         </span>
                                     </td>
                                 </tr>

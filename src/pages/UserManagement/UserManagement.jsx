@@ -3,7 +3,7 @@ import './UserManagement.css';
 import DashboardLayout from '../../components/Layout/DashboardLayout';
 import { FiSearch, FiFilter, FiEye, FiSlash } from 'react-icons/fi';
 
-const UserManagement = ({ onNavigate }) => {
+const UserManagement = ({ onNavigate, onLogout }) => {
     const [activeFilter, setActiveFilter] = useState('All');
 
     const users = [
@@ -85,7 +85,7 @@ const UserManagement = ({ onNavigate }) => {
     ];
 
     return (
-        <DashboardLayout onNavigate={onNavigate} activePage="users">
+        <DashboardLayout onNavigate={onNavigate} onLogout={onLogout} activePage="users">
             <div className="dashboard-header">
                 <h1>User Management</h1>
                 <p>Manage and oversee all platform users</p>

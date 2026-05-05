@@ -3,7 +3,7 @@ import './InspectionReview.css';
 import DashboardLayout from '../../components/Layout/DashboardLayout';
 import { FiEye, FiPlayCircle, FiCheck, FiX, FiAlertCircle, FiClock, FiVideo } from 'react-icons/fi';
 
-const InspectionReview = ({ onNavigate }) => {
+const InspectionReview = ({ onNavigate, onLogout }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedInspection, setSelectedInspection] = useState(null);
 
@@ -81,7 +81,7 @@ const InspectionReview = ({ onNavigate }) => {
     ];
 
     return (
-        <DashboardLayout onNavigate={onNavigate} activePage="inspection">
+        <DashboardLayout onNavigate={onNavigate} onLogout={onLogout} activePage="inspection">
             <div className="dashboard-header">
                 <h1>Inspection Review</h1>
                 <p>Review and approve inspection videos ({pendingInspections.length} pending)</p>

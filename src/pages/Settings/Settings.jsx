@@ -25,11 +25,11 @@ const mockPermissions = [
     { id: 12, name: 'System Configuration', category: 'settings', enabled: true }
 ];
 
-const Settings = ({ onNavigate }) => {
+const Settings = ({ onNavigate, onLogout }) => {
     const [selectedRole, setSelectedRole] = useState(mockRoles[0]);
 
     return (
-        <DashboardLayout onNavigate={onNavigate} activePage="settings">
+        <DashboardLayout onNavigate={onNavigate} onLogout={onLogout} activePage="settings">
             <div className="dashboard-header">
                 <h1>Settings</h1>
                 <p>Manage platform configuration and role permissions</p>
