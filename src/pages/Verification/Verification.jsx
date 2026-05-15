@@ -1,216 +1,319 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Verification.css';
 import DashboardLayout from '../../components/Layout/DashboardLayout';
-import { FiEye, FiCheck, FiX, FiImage, FiZoomIn, FiMessageSquare } from 'react-icons/fi';
+import { FiEye, FiCheck, FiX, FiImage, FiInfo, FiActivity, FiCheckCircle, FiXCircle } from 'react-icons/fi';
+import { authApi } from '../../api/api';
+import toast, { Toaster } from 'react-hot-toast';
 
 const Verification = ({ onNavigate, onLogout }) => {
-    const [activeTab, setActiveTab] = useState('clients');
+    const [pendingUsers, setPendingUsers] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [userDetails, setUserDetails] = useState(null);
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
-    const [selectedRecord, setSelectedRecord] = useState(null);
+    const [isActionLoading, setIsActionLoading] = useState(false);
 
-    const openViewModal = (record) => {
-        setSelectedRecord(record);
+    const fetchPendingUsers = async () => {
+        setLoading(true);
+        try {
+            const response = await authApi.get('/auth/get-all-users');
+            // Map to flat user objects first
+            const formattedUsers = response.data.map(item => ({
+                ...item.user,
+                verificationStatus: item.profile?.verificationStatus,
+                profile: item.profile
+            }));
+            // Filter only pending users, exclude admins, and ensure they HAVE a profile
+            const pending = formattedUsers.filter(u => 
+                u.role?.toUpperCase() !== 'ADMIN' && 
+                u.profile && // Must have a profile to be verified
+                (!u.verificationStatus || u.verificationStatus === 'pending')
+            );
+            setPendingUsers(pending);
+        } catch (error) {
+            console.error('Error fetching pending users:', error);
+            if (error.response?.status === 401) {
+                // Token refresh should handle this, but just in case
+                return;
+            }
+            toast.error('Failed to load pending verifications');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchPendingUsers();
+    }, []);
+
+    const openViewModal = async (userId) => {
         setIsViewModalOpen(true);
+        setUserDetails(null);
+        try {
+            const response = await authApi.get(`/auth/get-user/${userId}`);
+            setUserDetails(response.data);
+        } catch (error) {
+            console.error('Error fetching details:', error);
+            toast.error('Failed to load user details');
+            setIsViewModalOpen(false);
+        }
     };
 
     const closeViewModal = () => {
         setIsViewModalOpen(false);
-        setSelectedRecord(null);
+        setUserDetails(null);
     };
 
-    const pendingVerifications = [
-        {
-            id: 1,
-            name: 'Alice Martinez',
-            email: 'alice.m@example.com',
-            documents: ['ID Front', 'ID Back', 'Selfie'],
-            submittedAt: '2024-02-14 10:30',
-            type: 'client'
-        },
-        {
-            id: 2,
-            name: 'David Chen',
-            email: 'david.c@example.com',
-            documents: ['ID Front', 'ID Back', 'Selfie'],
-            submittedAt: '2024-02-14 14:15',
-            type: 'client'
-        },
-        {
-            id: 3,
-            name: 'Maria Garcia',
-            email: 'maria.g@example.com',
-            documents: ['ID Front', 'ID Back', 'Selfie'],
-            submittedAt: '2024-02-15 09:45',
-            type: 'client'
-        },
-        {
-            id: 4,
-            name: 'Global Traders LLC',
-            email: 'compliance@globaltraders.com',
-            documents: ['Business License', 'Tax ID', 'Director ID'],
-            submittedAt: '2024-02-12 11:00',
-            type: 'importator'
-        },
-        {
-            id: 5,
-            name: 'Supply Chain Co.',
-            email: 'verify@supplychain.net',
-            documents: ['Company Reg', 'Bank Statement', 'Owner ID'],
-            submittedAt: '2024-02-13 16:20',
-            type: 'importator'
+    const handleVerificationAction = async (userId, status) => {
+        setIsActionLoading(true);
+        try {
+            await authApi.post(`/auth/verify-user/${userId}`, { verificationStatus: status });
+            toast.success(`User verification ${status}`);
+            closeViewModal();
+            fetchPendingUsers(); // Refresh the list
+        } catch (error) {
+            // BACKEND FALLBACK: If 500 occurs, wait a moment and check if the change was actually saved
+            if (error.response?.status === 500 || error.message === 'Network Error') {
+                try {
+                    // Small delay to allow DB consistency
+                    await new Promise(resolve => setTimeout(resolve, 800));
+                    const checkResponse = await authApi.get(`/auth/get-user/${userId}`);
+                    
+                    // Check both profile and root user object for the status
+                    const currentStatus = checkResponse.data?.profile?.verificationStatus || checkResponse.data?.user?.verificationStatus;
+                    
+                    if (currentStatus === status) {
+                        toast.success(`User verification ${status} (Synced)`, {
+                            icon: '🔄',
+                            style: { background: '#10b981', color: '#fff' }
+                        });
+                        closeViewModal();
+                        fetchPendingUsers();
+                        return;
+                    }
+                } catch (checkError) {
+                    console.error('Fallback check failed:', checkError);
+                }
+            }
+            console.error('Verification error:', error);
+            toast.error('Failed to update verification status. Please try again.');
+        } finally {
+            setIsActionLoading(false);
         }
-    ];
-
-    const displayedRecords = pendingVerifications.filter(v => 
-        activeTab === 'clients' ? v.type === 'client' : v.type === 'importator'
-    );
+    };
 
     return (
         <DashboardLayout onNavigate={onNavigate} onLogout={onLogout} activePage="verification">
+            <Toaster position="top-right" />
             <div className="dashboard-header">
-                <h1>Verification Management</h1>
-                <p>Review and approve user verification submissions</p>
-            </div>
-
-            <div className="verification-tabs glass-panel">
-                <button 
-                    className={`nav-tab ${activeTab === 'clients' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('clients')}
-                >
-                    Pending Clients (3)
-                </button>
-                <div className="tab-divider"></div>
-                <button 
-                    className={`nav-tab ${activeTab === 'importators' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('importators')}
-                >
-                    Pending Importators (2)
-                </button>
+                <h1>Verification Queue</h1>
+                <p>Review and process pending verification submissions from new users</p>
             </div>
 
             <div className="verification-table-card glass-panel">
-                <div className="table-container">
-                    <table className="users-table neat-table">
-                        <thead>
-                            <tr>
-                                <th>User Info</th>
-                                <th>Documents</th>
-                                <th>Submitted At</th>
-                                <th align="right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {displayedRecords.map((record) => (
-                                <tr key={record.id}>
-                                    <td>
-                                        <div className="user-details-stacked">
-                                            <span className="user-name">{record.name}</span>
-                                            <span className="user-email text-secondary">{record.email}</span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div className="document-pills">
-                                            {record.documents.map((doc, idx) => (
-                                                <span key={idx} className="doc-pill">{doc}</span>
-                                            ))}
-                                        </div>
-                                    </td>
-                                    <td className="text-secondary font-mono">{record.submittedAt}</td>
-                                    <td>
-                                        <div className="action-buttons-group">
-                                            <button 
-                                                className="v-btn view-btn"
-                                                onClick={() => openViewModal(record)}
-                                            >
-                                                <FiEye /> View
-                                            </button>
-                                            <button className="v-btn approve-btn">
-                                                <FiCheck /> Approve
-                                            </button>
-                                            <button className="v-btn reject-btn">
-                                                <FiX /> Reject
-                                            </button>
-                                        </div>
-                                    </td>
+                {loading ? (
+                    <div className="loading-state">
+                        <div className="spinner"></div>
+                        <p>Scanning for pending verifications...</p>
+                    </div>
+                ) : (
+                    <div className="table-container">
+                        <table className="users-table neat-table">
+                            <thead>
+                                <tr>
+                                    <th>User Info</th>
+                                    <th>Role</th>
+                                    <th>Email</th>
+                                    <th>Status</th>
+                                    <th align="right">Actions</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                            </thead>
+                            <tbody>
+                                {pendingUsers.map((user) => (
+                                    <tr key={user.userId}>
+                                        <td>
+                                            <div className="user-identity">
+                                                <div className="user-avatar" style={{ backgroundColor: '#3b82f6', color: '#fff' }}>
+                                                    {user.fullName?.substring(0, 2).toUpperCase() || '??'}
+                                                </div>
+                                                <div className="user-details-stacked">
+                                                    <span className="user-name">{user.fullName}</span>
+                                                    <span className="user-email text-secondary">ID: {user.userId?.substring(0, 8)}</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span className={`role-pill ${user.role?.toLowerCase()}-role`}>{user.role}</span>
+                                        </td>
+                                        <td className="text-secondary font-mono">{user.email}</td>
+                                        <td>
+                                            <span className="status-pill pending">Pending Review</span>
+                                        </td>
+                                        <td>
+                                            <div className="action-buttons-group justify-end">
+                                                <button 
+                                                    className="v-btn view-btn"
+                                                    onClick={() => openViewModal(user.userId)}
+                                                >
+                                                    <FiEye /> Review Documents
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                                {pendingUsers.length === 0 && (
+                                    <tr>
+                                        <td colSpan="5" className="empty-row">Great job! No pending verifications at the moment.</td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
             </div>
 
             {/* View Modal Overlay */}
-            {isViewModalOpen && selectedRecord && (
+            {isViewModalOpen && (
                 <div className="modal-overlay" onClick={closeViewModal}>
-                    <div className="verification-modal glass-panel" onClick={e => e.stopPropagation()}>
+                    <div className="modal-content admin-modal verification-modal" onClick={e => e.stopPropagation()}>
                         <div className="modal-header">
-                            <h2>Uploaded Documents</h2>
-                            <button className="close-modal-btn" onClick={closeViewModal}><FiX size={20} /></button>
+                            <h2>Review Documents</h2>
+                            <button className="close-modal-btn" onClick={closeViewModal}>
+                                <FiX />
+                            </button>
                         </div>
                         
                         <div className="modal-body">
-                            <div className="modal-section">
-                                <h3 className="section-title">User Information</h3>
-                                <div className="user-info-grid">
-                                    <div className="info-item">
-                                        <span className="info-label">Full Name</span>
-                                        <span className="info-value">{selectedRecord.name}</span>
-                                    </div>
-                                    <div className="info-item">
-                                        <span className="info-label">Email Address</span>
-                                        <span className="info-value">{selectedRecord.email}</span>
-                                    </div>
-                                    <div className="info-item">
-                                        <span className="info-label">Account Role</span>
-                                        <span className="info-value capitalize">{selectedRecord.type}</span>
-                                    </div>
-                                    <div className="info-item">
-                                        <span className="info-label">Submission Date</span>
-                                        <span className="info-value">{selectedRecord.submittedAt}</span>
-                                    </div>
+                            {!userDetails ? (
+                                <div className="modal-loading">
+                                    <div className="spinner"></div>
+                                    <p>Loading documents...</p>
                                 </div>
-                            </div>
-
-                            <div className="modal-section">
-                                <h3 className="section-title">Uploaded Documents</h3>
-                                <div className="documents-grid">
-                                    {selectedRecord.documents.map((doc, idx) => (
-                                        <div key={idx} className="document-card">
-                                            <div className="doc-icon-area">
-                                                <FiImage size={32} className="main-doc-icon" />
-                                                <FiZoomIn size={16} className="zoom-icon" />
-                                            </div>
-                                            <span className="doc-label">{doc}</span>
+                            ) : (
+                                <div className="user-full-details">
+                                    <div className="modal-profile-header">
+                                        <div className="profile-avatar-large">
+                                            {userDetails.user.fullName?.substring(0, 2).toUpperCase()}
                                         </div>
-                                    ))}
+                                        <div className="profile-main-meta">
+                                            <h3>{userDetails.user.fullName}</h3>
+                                            <div className="meta-badges">
+                                                <span className={`role-badge ${userDetails.user.role?.toLowerCase()}`}>{userDetails.user.role}</span>
+                                                <span className="status-badge-outline pending">PENDING REVIEW</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="detail-section">
+                                        <div className="section-header"><FiInfo /> Applicant Identity</div>
+                                        <div className="info-grid">
+                                            <div className="info-item"><label>Email Address</label><span>{userDetails.user.email}</span></div>
+                                            <div className="info-item"><label>Phone Number</label><span>{userDetails.user.phoneNumber || 'N/A'}</span></div>
+                                            {userDetails.user?.role?.toLowerCase() === 'importator' && (
+                                                <>
+                                                    <div className="info-item"><label>Register Commerce #</label><span>{userDetails.profile?.registerCommerceNumber || 'N/A'}</span></div>
+                                                    <div className="info-item"><label>License ID</label><span>{userDetails.profile?.licenseId || 'N/A'}</span></div>
+                                                </>
+                                            )}
+                                            <div className="info-item"><label>Wilaya / Region</label><span>{userDetails.profile?.wilaya || 'N/A'}</span></div>
+                                            <div className="info-item"><label>Physical Address</label><span>{userDetails.profile?.address || userDetails.profile?.adress || 'N/A'}</span></div>
+                                        </div>
+                                    </div>
+
+                                    <div className="detail-section">
+                                        <div className="section-header"><FiImage /> Document Gallery</div>
+                                        <div className="documents-gallery">
+                                            {userDetails.user?.role?.toLowerCase() === 'client' ? (
+                                                <>
+                                                    <div className="doc-item">
+                                                        <label>ID Card</label>
+                                                        {userDetails.profile?.idCardImage ? (
+                                                            <img src={userDetails.profile.idCardImage} alt="ID" className="doc-preview" onClick={() => window.open(userDetails.profile.idCardImage)} />
+                                                        ) : (
+                                                            <div className="doc-placeholder"><FiImage /><span>No Image</span></div>
+                                                        )}
+                                                    </div>
+                                                    <div className="doc-item">
+                                                        <label>Selfie</label>
+                                                        {userDetails.profile?.selfieImage ? (
+                                                            <img src={userDetails.profile.selfieImage} alt="Selfie" className="doc-preview" onClick={() => window.open(userDetails.profile.selfieImage)} />
+                                                        ) : (
+                                                            <div className="doc-placeholder"><FiImage /><span>No Image</span></div>
+                                                        )}
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <div className="doc-item">
+                                                        <label>ID Front</label>
+                                                        {userDetails.profile?.idFrontCardImage ? (
+                                                            <img src={userDetails.profile.idFrontCardImage} alt="Front" className="doc-preview" onClick={() => window.open(userDetails.profile.idFrontCardImage)} />
+                                                        ) : (
+                                                            <div className="doc-placeholder"><FiImage /><span>No Image</span></div>
+                                                        )}
+                                                    </div>
+                                                    <div className="doc-item">
+                                                        <label>ID Back</label>
+                                                        {userDetails.profile?.idBackCardImage ? (
+                                                            <img src={userDetails.profile.idBackCardImage} alt="Back" className="doc-preview" onClick={() => window.open(userDetails.profile.idBackCardImage)} />
+                                                        ) : (
+                                                            <div className="doc-placeholder"><FiImage /><span>No Image</span></div>
+                                                        )}
+                                                    </div>
+                                                    <div className="doc-item">
+                                                        <label>Selfie</label>
+                                                        {userDetails.profile?.selfieImage ? (
+                                                            <img src={userDetails.profile.selfieImage} alt="Selfie" className="doc-preview" onClick={() => window.open(userDetails.profile.selfieImage)} />
+                                                        ) : (
+                                                            <div className="doc-placeholder"><FiImage /><span>No Image</span></div>
+                                                        )}
+                                                    </div>
+                                                    <div className="doc-item">
+                                                        <label>License</label>
+                                                        {userDetails.profile?.licenseImage ? (
+                                                            <img src={userDetails.profile.licenseImage} alt="License" className="doc-preview" onClick={() => window.open(userDetails.profile.licenseImage)} />
+                                                        ) : (
+                                                            <div className="doc-placeholder"><FiImage /><span>No Image</span></div>
+                                                        )}
+                                                    </div>
+                                                    <div className="doc-item">
+                                                        <label>Commerce Reg.</label>
+                                                        {userDetails.profile?.registerCommerceImage ? (
+                                                            <img src={userDetails.profile.registerCommerceImage} alt="Reg" className="doc-preview" onClick={() => window.open(userDetails.profile.registerCommerceImage)} />
+                                                        ) : (
+                                                            <div className="doc-placeholder"><FiImage /><span>No Image</span></div>
+                                                        )}
+                                                    </div>
+                                                </>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    <div className="detail-section">
+                                        <div className="section-header"><FiActivity /> Decision</div>
+                                        <div className="verification-decision-btns">
+                                            <button 
+                                                className="btn-action approve-card" 
+                                                disabled={isActionLoading}
+                                                onClick={() => handleVerificationAction(userDetails.user.userId, 'approved')}
+                                            >
+                                                <div className="btn-glow"></div>
+                                                <FiCheckCircle /> 
+                                                <span>Approve Profile</span>
+                                            </button>
+                                            <button 
+                                                className="btn-action reject-card" 
+                                                disabled={isActionLoading}
+                                                onClick={() => handleVerificationAction(userDetails.user.userId, 'rejected')}
+                                            >
+                                                <div className="btn-glow"></div>
+                                                <FiXCircle /> 
+                                                <span>Reject Submission</span>
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
-                                <p className="doc-hint">Click on any document to view full resolution</p>
-                            </div>
-
-                            <div className="admin-comment-section">
-                                <label>Admin Comment *</label>
-                                <textarea 
-                                    className="dark-textarea" 
-                                    placeholder="Enter your review notes or reasons for approval/rejection..."
-                                    rows="3"
-                                ></textarea>
-                            </div>
-                        </div>
-
-                        <div className="modal-footer">
-                            <div className="footer-left">
-                                <button className="modal-btn reject-outline-btn">
-                                    <FiX /> Reject
-                                </button>
-                            </div>
-                            <div className="footer-right">
-                                <button className="modal-btn request-info-btn">
-                                    <FiMessageSquare /> Request More Info
-                                </button>
-                                <button className="modal-btn approve-solid-btn">
-                                    <FiCheck /> Approve Verification
-                                </button>
-                            </div>
+                            )}
                         </div>
                     </div>
                 </div>

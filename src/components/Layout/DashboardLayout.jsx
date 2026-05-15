@@ -28,6 +28,12 @@ const DashboardLayout = ({ children, activePage, onNavigate, onLogout }) => {
         { id: 'logs', label: 'System Logs', icon: <FiServer /> },
     ];
 
+    const userJson = localStorage.getItem('user');
+    const user = userJson ? JSON.parse(userJson) : null;
+    const adminName = user ? (user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : (user.username || user.email)) : 'Admin User';
+    const adminRole = user ? (user.role || 'Super Admin') : 'Super Admin';
+    const initials = adminName.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+
     return (
         <div className="layout-root">
             {/* Sidebar */}
@@ -74,10 +80,10 @@ const DashboardLayout = ({ children, activePage, onNavigate, onLogout }) => {
                             <span className="badge">5</span>
                         </div>
                         <div className="user-profile">
-                            <div className="avatar">AD</div>
+                            <div className="avatar">{initials}</div>
                             <div className="user-info">
-                                <span className="name">Admin User</span>
-                                <span className="role">Super Admin</span>
+                                <span className="name">{adminName}</span>
+                                <span className="role">{adminRole}</span>
                             </div>
                         </div>
                     </div>
