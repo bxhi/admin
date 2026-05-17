@@ -71,6 +71,9 @@ const DashboardLayout = ({ children, activePage, onNavigate, onLogout }) => {
                 {/* Topbar */}
                 <header className="topbar">
                     <div className="topbar-left">
+                        <button className="menu-toggle" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
+                            <FiMenu size={24} />
+                        </button>
                         <h2 className="topbar-title">ADMIN DASHBOARD</h2>
                     </div>
                     

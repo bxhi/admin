@@ -296,7 +296,7 @@ const UserManagement = ({ onNavigate, onLogout }) => {
                                             {userDetails.user?.role?.toLowerCase() === 'importator' && (
                                                 <>
                                                     <div className="info-item"><label>Register Commerce #</label><span>{userDetails.profile?.registerCommerceNumber || 'N/A'}</span></div>
-                                                    <div className="info-item"><label>License ID</label><span>{userDetails.profile?.licenseId || 'N/A'}</span></div>
+                                                    <div className="info-item"><label>NIN (National Identification Number)</label><span>{userDetails.profile?.nin || userDetails.profile?.NIN || 'N/A'}</span></div>
                                                 </>
                                             )}
                                             <div className="info-item"><label>Wilaya / Region</label><span>{userDetails.profile?.wilaya || 'N/A'}</span></div>

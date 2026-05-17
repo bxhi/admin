@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Verification.css';
 import DashboardLayout from '../../components/Layout/DashboardLayout';
-import { FiEye, FiCheck, FiX, FiImage, FiInfo, FiActivity, FiCheckCircle, FiXCircle } from 'react-icons/fi';
+import { FiEye, FiCheck, FiX, FiImage, FiInfo, FiActivity, FiCheckCircle, FiXCircle, FiRefreshCw } from 'react-icons/fi';
 import { authApi } from '../../api/api';
 import toast, { Toaster } from 'react-hot-toast';
 
@@ -105,9 +105,20 @@ const Verification = ({ onNavigate, onLogout }) => {
     return (
         <DashboardLayout onNavigate={onNavigate} onLogout={onLogout} activePage="verification">
             <Toaster position="top-right" />
-            <div className="dashboard-header">
-                <h1>Verification Queue</h1>
-                <p>Review and process pending verification submissions from new users</p>
+            <div className="dashboard-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
+                <div>
+                    <h1>Verification Queue</h1>
+                    <p>Review and process pending verification submissions from new users</p>
+                </div>
+                <button 
+                    className="v-btn approve-btn" 
+                    style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 16px', background: 'rgba(59, 130, 246, 0.2)', color: '#3b82f6', border: '1px solid rgba(59, 130, 246, 0.4)' }}
+                    onClick={fetchPendingUsers}
+                    disabled={loading}
+                >
+                    <FiRefreshCw className={loading ? 'spinning' : ''} />
+                    Refresh
+                </button>
             </div>
 
             <div className="verification-table-card glass-panel">
@@ -212,7 +223,7 @@ const Verification = ({ onNavigate, onLogout }) => {
                                             {userDetails.user?.role?.toLowerCase() === 'importator' && (
                                                 <>
                                                     <div className="info-item"><label>Register Commerce #</label><span>{userDetails.profile?.registerCommerceNumber || 'N/A'}</span></div>
-                                                    <div className="info-item"><label>License ID</label><span>{userDetails.profile?.licenseId || 'N/A'}</span></div>
+                                                    <div className="info-item"><label>NIN (National Identification Number)</label><span>{userDetails.profile?.nin || userDetails.profile?.NIN || 'N/A'}</span></div>
                                                 </>
                                             )}
                                             <div className="info-item"><label>Wilaya / Region</label><span>{userDetails.profile?.wilaya || 'N/A'}</span></div>

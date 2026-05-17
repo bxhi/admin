@@ -134,6 +134,51 @@
 .status-pill.pending { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
 .status-pill.rejected { background: rgba(244, 63, 94, 0.1); color: #f43f5e; }
 
+/* Table Actions */
+.actions-cell {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.action-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #94a3b8;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 0;
+}
+
+.action-icon:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.view-action:hover {
+    color: #3b82f6;
+    background: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+.block-action:hover {
+    color: #f43f5e;
+    background: rgba(244, 63, 94, 0.1);
+    border-color: rgba(244, 63, 94, 0.3);
+}
+
+.action-icon svg {
+    font-size: 16px;
+}
+
 /* Modal Styles */
 .modal-overlay {
     position: fixed;
@@ -680,4 +725,58 @@
     background: #3b82f6;
     border-radius: 4px;
     opacity: 0.3;
+}
+
+/* ========================================================================= */
+/* Responsive Design (Mobile & Tablet)                                       */
+/* ========================================================================= */
+
+@media (max-width: 1024px) {
+    .users-management-container {
+        padding: 16px;
+    }
+    .users-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    .users-controls {
+        flex-direction: column;
+    }
+    .search-wrapper, .filter-select {
+        width: 100%;
+    }
+    .users-stats {
+        grid-template-columns: 1fr;
+    }
+    .modal-content.user-detail-modal {
+        width: 95%;
+        margin: 16px;
+        padding: 20px;
+    }
+    .modal-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    .user-profile-summary {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .user-actions {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    .btn-action {
+        width: 100%;
+        justify-content: center;
+    }
 }

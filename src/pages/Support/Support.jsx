@@ -9,7 +9,7 @@ const Support = ({ onNavigate, onLogout }) => {
             title: 'Technical Support',
             desc: 'For issues related to the dashboard, bugs, or technical errors.',
             icon: <FiMessageSquare />,
-            contact: 'tech-support@importlink.com',
+            contact: 'i.mesbahi@esi-sba.dz',
             actionLabel: 'Send Email',
             color: 'blue'
         },
@@ -17,7 +17,7 @@ const Support = ({ onNavigate, onLogout }) => {
             title: 'Account Manager',
             desc: 'Direct line for administrative and account-related inquiries.',
             icon: <FiPhone />,
-            contact: '+213 (0) 555 12 34 56',
+            contact: '+213 540 26 85 13',
             actionLabel: 'Call Now',
             color: 'green'
         },

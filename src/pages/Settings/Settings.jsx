@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './Settings.css';
 import DashboardLayout from '../../components/Layout/DashboardLayout';
 import { FiShield, FiTrash2, FiPlus, FiSave } from 'react-icons/fi';
+import { toast } from 'react-hot-toast';
 
 const mockRoles = [
     { id: 'super_admin', name: 'Super Admin', users: 2, isSuper: true },
@@ -27,6 +28,36 @@ const mockPermissions = [
 
 const Settings = ({ onNavigate, onLogout }) => {
     const [selectedRole, setSelectedRole] = useState(mockRoles[0]);
+    const [platformSettings, setPlatformSettings] = useState({
+        name: 'Import Platform',
+        escrowPercentage: 5,
+        defaultLanguage: 'en',
+        paymentMethods: {
+            creditCard: true,
+            bankTransfer: true,
+            paypal: false,
+            crypto: false
+        }
+    });
+
+    const handlePlatformChange = (field, value) => {
+        setPlatformSettings(prev => ({ ...prev, [field]: value }));
+    };
+
+    const handlePaymentToggle = (method) => {
+        setPlatformSettings(prev => ({
+            ...prev,
+            paymentMethods: {
+                ...prev.paymentMethods,
+                [method]: !prev.paymentMethods[method]
+            }
+        }));
+    };
+
+    const handleSaveSettings = () => {
+        toast.success('Platform settings updated successfully');
+        console.log('Saving platform settings:', platformSettings);
+    };
 
     return (
         <DashboardLayout onNavigate={onNavigate} onLogout={onLogout} activePage="settings">
@@ -42,20 +73,34 @@ const Settings = ({ onNavigate, onLogout }) => {
                     
                     <div className="form-group config-input">
                         <label>Platform Name</label>
-                        <input type="text" className="dark-input" defaultValue="Import Platform" />
+                        <input 
+                            type="text" 
+                            className="dark-input" 
+                            value={platformSettings.name} 
+                            onChange={(e) => handlePlatformChange('name', e.target.value)}
+                        />
                     </div>
 
                     <div className="form-group config-input">
                         <label>Default Escrow Percentage</label>
                         <div className="input-with-icon">
-                            <input type="number" className="dark-input" defaultValue="5" />
+                            <input 
+                                type="number" 
+                                className="dark-input" 
+                                value={platformSettings.escrowPercentage} 
+                                onChange={(e) => handlePlatformChange('escrowPercentage', e.target.value)}
+                            />
                             <span className="input-suffix">%</span>
                         </div>
                     </div>
 
                     <div className="form-group config-input">
                         <label>Default Language</label>
-                        <select className="dark-input dark-select">
+                        <select 
+                            className="dark-input dark-select"
+                            value={platformSettings.defaultLanguage}
+                            onChange={(e) => handlePlatformChange('defaultLanguage', e.target.value)}
+                        >
                             <option value="en">English</option>
                             <option value="ar">Arabic</option>
                             <option value="fr">French</option>
@@ -67,24 +112,52 @@ const Settings = ({ onNavigate, onLogout }) => {
                         <div className="payment-toggles">
                             <div className="toggle-row inline">
                                 <span>Credit Card</span>
-                                <label className="glass-toggle"><input type="checkbox" defaultChecked /><span className="slider"></span></label>
+                                <label className="glass-toggle">
+                                    <input 
+                                        type="checkbox" 
+                                        checked={platformSettings.paymentMethods.creditCard} 
+                                        onChange={() => handlePaymentToggle('creditCard')}
+                                    />
+                                    <span className="slider"></span>
+                                </label>
                             </div>
                             <div className="toggle-row inline">
                                 <span>Bank Transfer</span>
-                                <label className="glass-toggle"><input type="checkbox" defaultChecked /><span className="slider"></span></label>
+                                <label className="glass-toggle">
+                                    <input 
+                                        type="checkbox" 
+                                        checked={platformSettings.paymentMethods.bankTransfer} 
+                                        onChange={() => handlePaymentToggle('bankTransfer')}
+                                    />
+                                    <span className="slider"></span>
+                                </label>
                             </div>
                             <div className="toggle-row inline">
                                 <span>Paypal</span>
-                                <label className="glass-toggle"><input type="checkbox" /><span className="slider"></span></label>
+                                <label className="glass-toggle">
+                                    <input 
+                                        type="checkbox" 
+                                        checked={platformSettings.paymentMethods.paypal} 
+                                        onChange={() => handlePaymentToggle('paypal')}
+                                    />
+                                    <span className="slider"></span>
+                                </label>
                             </div>
                             <div className="toggle-row inline">
                                 <span>Crypto</span>
-                                <label className="glass-toggle"><input type="checkbox" /><span className="slider"></span></label>
+                                <label className="glass-toggle">
+                                    <input 
+                                        type="checkbox" 
+                                        checked={platformSettings.paymentMethods.crypto} 
+                                        onChange={() => handlePaymentToggle('crypto')}
+                                    />
+                                    <span className="slider"></span>
+                                </label>
                             </div>
                         </div>
                     </div>
 
-                    <button className="run-btn save-btn mt-auto">
+                    <button className="run-btn save-btn mt-auto" onClick={handleSaveSettings}>
                         <FiSave /> Save Settings
                     </button>
                 </div>
